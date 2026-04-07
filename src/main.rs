@@ -24,9 +24,9 @@ struct Args {
     #[arg(long, default_value_t = false)]
     transparent: bool,
 
-    /// Transparent outside circle (default is black)
+    /// Alternative projektion to keep horizontal and vertical are kept (default is false)
     #[arg(long, default_value_t = false)]
-    straight: bool,
+    keepbox: bool,
 
     /// Output width (defaults to input width)
     #[arg(long)]
@@ -58,7 +58,7 @@ fn main() -> Result<()> {
     let out_h = args.height.unwrap_or(in_h);
     let src = img.to_rgba8();
 
-    let output: RgbaImage = if args.straight { ImageBuffer::from_fn(out_w, out_h, |x, y| {
+    let output: RgbaImage = if args.keepbox { ImageBuffer::from_fn(out_w, out_h, |x, y| {
         sample_sphere1(x, y, out_w, out_h, &src, args.strength, args.transparent)
     })} else {
         ImageBuffer::from_fn(out_w, out_h, |x, y| {
@@ -99,7 +99,7 @@ fn sample_sphere(
             Rgba([0, 0, 0, 255])
         };
     }
-    let sin_t = (r / radius).clamp(0.0, 1.0).powf(strength.max(0.001));
+    let sin_t = (r / radius).clamp(0.0, 1.0).powf((strength/3.0).max(0.001));
 //    let sin_x = (dx / radius).signum() * (dx / radius).abs().powf(strength.max(0.001));
 //    let sin_y = (dy / radius).signum() * (dy / radius).abs().powf(strength.max(0.001));
 
@@ -108,13 +108,13 @@ fn sample_sphere(
 
     let rwidth = radius;// (width as f32 / 2.0);
     let rheight = radius; // (height as f32 / 2.0);
-    let sample_x0 = ((cx as f32 + sx*rwidth/PI*2.0) as u32);
+    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.0) as u32;
     let sample_x = sample_x0.clamp(1, src.width() - 2);
     let sample_y0 = ((cy as f32 + sy*rheight/PI*2.0) as u32 ).clamp(1, src.height() - 2);
     let sample_y = sample_y0.clamp(1, src.height() - 2);
 //    if ((x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516)) {
 //    if (y == 20160) {
-    if (x == 2016 && (y == 2016 || y == 1008)) {
+    if x == 2016 && (y == 2016 || y == 1008) {
         println!(
             "x: {}, y: {}, dx: {:.2}, dy: {:.2}, r: {:.2}, radius: {:.2}, sin_t: {:.4}, sx: {:.4}, sy: {:.4}, sample_x0: {}, sample_x: {}, sample_y0: {}, sample_y: {}",
             x, y, dx, dy, r, radius, sin_t , sx, sy, sample_x0, sample_x, sample_y0, sample_y
@@ -146,16 +146,6 @@ fn sample_sphere1(
             Rgba([0, 0, 0, 255])
         };
     }
-/*
-    let rn = (r / radius).clamp(0.0, 1.0);
-    let theta = rn.powf(strength.max(0.001)) * (PI / 2.0);
-
-    let nx = dx / radius;
-    let ny = dy / radius;
-
-    let sin_t = theta.sin();
-    let cos_t = theta.cos();
-    */
 
     let sin_x = (dx / radius).signum() * (dx / radius).abs().powf(strength.max(0.001));
     let sin_y = (dy / radius).signum() * (dy / radius).abs().powf(strength.max(0.001));
@@ -163,48 +153,18 @@ fn sample_sphere1(
     let sx = sin_x.asin();
     let sy = sin_y.asin();
 
-    /*
-    let sx = nx * cos_t;
-    let sy = ny * cos_t;
-    let sz = sin_t;
-
-    
-    let lon = (sx.atan2(sz) + PI) % (2.0 * PI);
-    let lat = (sy.asin() + PI / 2.0).clamp(0.0, PI);
-
-    let tx = lon / (2.0 * PI);
-    let ty = 1.0 - (lat / PI);
-*/
-
-
-/*
-    let sample_x = (tx/1.0 * (src.width() as f32)).clamp(0.0, (src.width() - 1) as f32) as u32;
-    let sample_y = (ty/1.0 * (src.height() as f32)).clamp(0.0, (src.height() - 1) as f32) as u32;
-*/
     let rwidth = radius;// (width as f32 / 2.0);
     let rheight = radius; // (height as f32 / 2.0);
-    let sample_x0 = ((cx as f32 + sx*rwidth/PI*2.0) as u32);
+    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.0) as u32;
     let sample_x = sample_x0.clamp(1, src.width() - 2);
     let sample_y0 = ((cy as f32 + sy*rheight/PI*2.0) as u32 ).clamp(1, src.height() - 2);
     let sample_y = sample_y0.clamp(1, src.height() - 2);
-//    if ((x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516)) {
-    if (y == 20160) {
+//    if (x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516) {
+    if y == 20160 {
         println!(
             "x: {}, y: {}, dx: {:.2}, dy: {:.2}, r: {:.2}, radius: {:.2}, sin_x: {:.4}, sin_y: {:.4},  sx: {:.4}, sy: {:.4}, sample_x0: {}, sample_x: {}, sample_y0: {}, sample_y: {}",
             x, y, dx, dy, r, radius, sin_x, sin_y, sx, sy, sample_x0, sample_x, sample_y0, sample_y
         );
     }
-/*
-unsafe {    
-    if (sample_y > max_y) {
-        max_y = sample_y;
-        println!("New max_y: {}, at x: {}, y: {}, sample_x: {}, sample_y: {}", max_y, x, y, sample_x, sample_y);
-    }
-    if (sample_x > max_x) {
-        max_x = sample_x;
-        println!("New max_x: {}, at x: {}, y: {}, sample_x: {}, sample_y: {}", max_x, x, y, sample_x, sample_y);
-    }
-}
-  */  
     *src.get_pixel(sample_x, sample_y)
 }
