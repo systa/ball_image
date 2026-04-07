@@ -114,12 +114,14 @@ fn sample_sphere(
     let sample_y = sample_y0.clamp(1, src.height() - 2);
 //    if ((x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516)) {
 //    if (y == 20160) {
-    if x == 2016 && (y == 2016 || y == 1008) {
+/*
+if x == 2016 && (y == 2016 || y == 1008) {
         println!(
             "x: {}, y: {}, dx: {:.2}, dy: {:.2}, r: {:.2}, radius: {:.2}, sin_t: {:.4}, sx: {:.4}, sy: {:.4}, sample_x0: {}, sample_x: {}, sample_y0: {}, sample_y: {}",
             x, y, dx, dy, r, radius, sin_t , sx, sy, sample_x0, sample_x, sample_y0, sample_y
         );
     }
+*/
     *src.get_pixel(sample_x, sample_y)
 }
 
@@ -160,11 +162,13 @@ fn sample_sphere1(
     let sample_y0 = ((cy as f32 + sy*rheight/PI*2.2) as u32 ).clamp(1, src.height() - 2);
     let sample_y = sample_y0.clamp(1, src.height() - 2);
 //    if (x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516) {
+/*
     if y == 20160 {
         println!(
             "x: {}, y: {}, dx: {:.2}, dy: {:.2}, r: {:.2}, radius: {:.2}, sin_x: {:.4}, sin_y: {:.4},  sx: {:.4}, sy: {:.4}, sample_x0: {}, sample_x: {}, sample_y0: {}, sample_y: {}",
             x, y, dx, dy, r, radius, sin_x, sin_y, sx, sy, sample_x0, sample_x, sample_y0, sample_y
         );
     }
+*/
     *src.get_pixel(sample_x, sample_y)
 }
