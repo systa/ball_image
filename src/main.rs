@@ -108,9 +108,9 @@ fn sample_sphere(
 
     let rwidth = radius;// (width as f32 / 2.0);
     let rheight = radius; // (height as f32 / 2.0);
-    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.0) as u32;
+    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.2) as u32;
     let sample_x = sample_x0.clamp(1, src.width() - 2);
-    let sample_y0 = ((cy as f32 + sy*rheight/PI*2.0) as u32 ).clamp(1, src.height() - 2);
+    let sample_y0 = ((cy as f32 + sy*rheight/PI*2.2) as u32 ).clamp(1, src.height() - 2);
     let sample_y = sample_y0.clamp(1, src.height() - 2);
 //    if ((x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516)) {
 //    if (y == 20160) {
@@ -155,9 +155,9 @@ fn sample_sphere1(
 
     let rwidth = radius;// (width as f32 / 2.0);
     let rheight = radius; // (height as f32 / 2.0);
-    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.0) as u32;
+    let sample_x0 = (cx as f32 + sx*rwidth/PI*2.2) as u32;
     let sample_x = sample_x0.clamp(1, src.width() - 2);
-    let sample_y0 = ((cy as f32 + sy*rheight/PI*2.0) as u32 ).clamp(1, src.height() - 2);
+    let sample_y0 = ((cy as f32 + sy*rheight/PI*2.2) as u32 ).clamp(1, src.height() - 2);
     let sample_y = sample_y0.clamp(1, src.height() - 2);
 //    if (x == 2524 && y == 1516) || (x == 3524 && y == 1516) || (x == 2524 && y == 2516) || (x == 3524 && y == 2516) {
     if y == 20160 {
